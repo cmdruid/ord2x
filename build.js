@@ -8,17 +8,18 @@ esbuild
   .build({
     bundle: true,
     entryPoints: {
-      'popup.build': './extension/popup.jsx',
-      'prompt.build': './extension/prompt.jsx',
-      'options.build': './extension/options.jsx',
-      'background.build': './extension/background.js',
-      'content-script.build': './extension/content-script.js'
+      'background.build' : './src/background.ts',
+      'content.build'    : './src/content.ts',
+      'popup.build'      : './src/pages/popup.tsx',
+      'prompt.build'     : './src/pages/prompt.tsx',
+      'provider.build'   : './src/provider.ts',
+      'options.build'    : './src/pages/options.tsx'
     },
     outdir: './extension',
     sourcemap: prod ? false : 'inline',
     define: {
-      window: 'self',
-      global: 'self'
+      window : 'self',
+      global : 'self'
     }
   })
   .then(() => console.log('build success.'))

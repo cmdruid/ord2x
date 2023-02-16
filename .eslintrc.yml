@@ -13,8 +13,6 @@ parserOptions:
   sourceType        : "module"
   project:
    - tsconfig.json
-   - contrib/demo/board/tsconfig.json
-   - contrib/demo/board/tsconfig.node.json
 
 rules:
   semi               : [ 2, "never" ]
@@ -54,8 +52,9 @@ rules:
           after     : true
 
 ignorePatterns:
-  - build
+  - extention/dist
+  - extention/icons
   - coverage
-  - dist
   - test
-  - rollup.config.ts
+  - build.js
+  - babel.config.js

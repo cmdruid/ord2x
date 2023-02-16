@@ -1,24 +1,20 @@
 {
-  "ts-node": {
-    "transpileOnly": true,
-    "files": true,
-    "esm": true,
-    "compilerOptions": {
-      "module": "ES2022"
-    },
-    "include": ["test/**/*.test.ts"],
-    "experimentalSpecifierResolution": "node"
-  },
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
-    "module": "ES2022",
-    "target": "ES2022",
+    "module": "ESNext",
+    "target": "ESNext",
     "moduleResolution": "Node",
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "jsx": "react-jsx",
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "./extension",
     "sourceMap": true,
     "declaration": true,
-    "declarationDir": "./dist/types",
+    "declarationDir": "./extension/types",
     "declarationMap": true,
     "emitDeclarationOnly": true,
     "importHelpers": true,
@@ -32,14 +28,19 @@
     "strict": true,
     "pretty": true,
     "removeComments": true,
-    "strictNullChecks": true,
+    // "strictNullChecks": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "experimentalDecorators": true
+    "noUnusedParameters": true
   },
-  "exclude": ["node_modules"],
-  "include": ["src/**/*.ts"]
+  "exclude": [
+    "node_modules",
+    "test",
+    "extention/dist"
+  ],
+  "include": [
+    "src/**/*.ts",
+  ]
 }

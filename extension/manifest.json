@@ -12,7 +12,7 @@
   },
   "options_page": "options.html",
   "background": {
-    "service_worker": "background.build.js"
+    "service_worker": "service-worker.js"
   },
   "action": {
     "default_title": "ord2x",
@@ -21,13 +21,13 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content-script.build.js"]
+      "js": ["content.build.js"]
     }
   ],
-  "permissions": ["storage"],
+  "permissions": [ "storage" ],
   "web_accessible_resources": [
     {
-      "resources": ["nostr-provider.js"],
+      "resources": ["provider.build.js"],
       "matches": ["https://*/*", "http://localhost:*/*"]
     }
   ]

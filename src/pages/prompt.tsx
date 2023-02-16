@@ -1,21 +1,18 @@
-import browser from 'webextension-polyfill'
-import {render} from 'react-dom'
-import React from 'react'
-
-import {getAllowedCapabilities} from './common'
+import { render } from 'react-dom'
+import React      from 'react'
+import browser    from 'webextension-polyfill'
+import { getAllowedMethods } from '../access.js'
 
 function Prompt() {
-  let qs = new URLSearchParams(location.search)
-  let id = qs.get('id')
-  let host = qs.get('host')
-  let level = parseInt(qs.get('level'))
-  let params
+  const query = new URLSearchParams(location.search)
+  const id    = query.get('id')
+  const host  = query.get('host')
+  const level = parseInt(query.get('level') ?? '0')
+  let params : Record<string, any>
   try {
-    params = JSON.parse(qs.get('params'))
-    if (Object.keys(params).length === 0) params = null
-  } catch (err) {
-    params = null
-  }
+    params = JSON.parse(query.get('params') ?? '')
+    if (Object.keys(params).length === 0) params = {}
+  } catch (err) { params = {} }
 
   return (
     <>
@@ -25,7 +22,7 @@ function Prompt() {
         </b>{' '}
         <p>is requesting your permission to </p>
         <ul>
-          {getAllowedCapabilities(level).map(cap => (
+          {getAllowedMethods(level).map(cap => (
             <li key={cap}>
               <i style={{fontSize: '140%'}}>{cap}</i>
             </li>
@@ -70,8 +67,8 @@ function Prompt() {
   )
 
   function authorizeHandler(condition) {
-    return function (ev) {
-      ev.preventDefault()
+    return function (e) {
+      e.preventDefault()
       browser.runtime.sendMessage({
         prompt: true,
         id,

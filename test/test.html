@@ -7,61 +7,28 @@
   <title>Test Suite</title>
 </head>
 <body>
-  <script src="https://unpkg.com/@cmdcode/crypto-utils@1.4.3"></script>
+  <script src="https://unpkg.com/@cmdcode/crypto-utils@1.5.3"></script>
   <script type="module">
     setTimeout(async () => {
-      const { getPublicKey, getHmacKey, signEvent, getTweakedPub, signWithTweak } = window.nostr
+      console.log(window.ord)
+      const { signWithKey } = window.ord
       const { Noble, Field, Point, Hash, Signer } = window.cryptoUtils
 
       const ec = new TextEncoder()
       const hexToBytes = Noble.utils.hexToBytes
       const bytesToHex = Noble.utils.bytesToHex
 
-      const event = {
-        kind: 1,
-        created_at: Math.floor(Date.now() / 1000),
-        content: 'this is a test!',
-        tags: []
-      }
-
-      // Set the private key and tweak to use for testing.
-      const masterPrv     = '69cf4ed2fdea041bb2081deb9a06586bddda23ab807d7f0dce11a3067b3af5d6'
-      const tweak         = '/0/0/0'
-
-      // Verify that getHmacKey(tweak) returns the correct result.
-      const tweakHash     = await getHmacKey(tweak)
-      const checkHash     = await Hash.hmac256(ec.encode(tweak), hexToBytes(masterPrv))
-      console.log('getHmacKey check:', tweakHash === bytesToHex(checkHash))
-      
-      // Verify that getPublicKey() returns the correct result.
-      const masterPub     = await getPublicKey()
-      const masterField   = new Field(hexToBytes(masterPrv))
-      const masterPoint   = masterField.point
-      const chkMasterPub  = bytesToHex(masterPoint.rawX.slice(1))
-      console.log('Master pub check:', masterPub === chkMasterPub)
+      const pubkey = '85c74b2c575301ec47c0d080c79ed0988faf1d5b755938b3d535f1a743e7c648'
+      const pubcheck = await getPublicKey(pubkey)
+      console.log('Pubkey check:', pubkey === pubcheck)
 
       // Verify that signEvent() returns the correct result.
-      const signer        = new Signer(masterPrv)
-      const signedEvent   = await signEvent(event)
-      const signerCheck   = await signer.verify(signedEvent.id, signedEvent.sig)
+      const data = JSON.stringify({ test: 'test' })
+      const msg  = await Hash.sha256(ec.encode(data))
+      const sig  = signWithKey(pubkey, data)
+      Noble.schnorr.verify(sig, msg, pubkey)
       console.log('Base signature check:', signerCheck)
 
-      // Verify that getPublicKey(tweak) returns the correct result.
-      const tweakedPub    = await getPublicKey(tweak)
-      const { id, pubkey, sig } = await signEvent(event, tweak)
-      console.log('getTweakedPub check:', pubkey === tweakedPub)
-
-      // Verify that both getPublicKey(tweak) and signEvent(tweak)
-      // return the same pubkey as a result.
-      const tweakedPoint  = masterPoint.add(tweakHash)
-      const chkTweakedPub = bytesToHex(tweakedPoint.rawX.slice(1))
-      console.log('Tweaked pub check:', tweakedPub === chkTweakedPub)
-
-      // Verify that signEvent(tweak) returns the correct result.
-      const tweakField  = masterField.add(tweakHash)
-      const tweakSigner = new Signer(tweakField)
-      const twkSigCheck = await tweakSigner.verify(id, sig)
-      console.log('Tweaked signature check:', twkSigCheck)
     }, 1000)
   </script>
 </body>
